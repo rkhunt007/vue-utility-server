@@ -2,6 +2,7 @@ const { default: axios } = require('axios');
 const express = require('express');
 const cors = require('cors');
 const cron = require('node-cron');
+const {compareAsc, format} =  require('date-fns');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
@@ -26,7 +27,7 @@ app.use('/api/load', require('./routes/api/load'));
 app.use('/api/fetchAll', require('./routes/api/fetchAll'));
 
 async function init() {
-    console.log('##### begin fetching data ###########')
+    console.log(format(new Date(), 'yyyy-MM-dd HH:mm'), '##### begin fetching data ###########')
     const symbols = ['AMZN', 'NFLX', 'AAPL', 'SHOP', 'META'];
     for (let i = 0; i < symbols.length; i++) {
         const symbol = symbols[i];
@@ -34,7 +35,7 @@ async function init() {
         await axios.get(`http://localhost:5000/api/load?symbol=${symbol}`);
         await delay(60000)
     }
-    console.log('##### end fetching data ###########')
+    console.log(format(new Date(), 'yyyy-MM-dd HH:mm'), '##### end fetching data ###########')
 }
 
 cron.schedule('59 23 * * *', function () {

@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('../api');
 const apiFields = require('../../constants');
 const Symbol = require("../../models/Symbol");
+const {compareAsc, format} =  require('date-fns');
 
 // @route   GET api/load
 // @access  Public
@@ -85,10 +86,12 @@ async function loadData(symbol) {
         { $set: symbolFields },
         { new: true, setDefaultsOnInsert: true }
       );
+      console.log(format(new Date(), 'yyyy-MM-dd HH:mm'), `symbol updated for ${symbol}`)
       return {message: 'symbol updated', payload: symbolObj}
     }
 
     await symbolObj.save();
+    console.log(format(new Date(), 'yyyy-MM-dd HH:mm'), `symbol added for ${symbol}`)
     return {message: 'symbol added', payload: symbolObj}
 
   } catch (error) {
